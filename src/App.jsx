@@ -1,5 +1,5 @@
 import { useMemo, useState } from 'react';
-import { Route, Routes } from 'react-router-dom';
+import { Route, Routes, useLocation } from 'react-router-dom';
 import Navbar from './components/Navbar';
 import Footer from './components/Footer';
 import HomePage from './pages/HomePage';
@@ -7,9 +7,12 @@ import ShopPage from './pages/ShopPage';
 import CheckoutPage from './pages/CheckoutPage';
 import ContactPage from './pages/ContactPage';
 import AboutPage from './pages/AboutPage';
+import BusinessCardPage from './pages/BusinessCardPage';
 
 export default function App() {
   const [cart, setCart] = useState([]);
+  const { pathname } = useLocation();
+  const isBusinessCardRoute = pathname === '/business-card';
 
   const addToCart = (product) => {
     setCart((prev) => {
@@ -39,8 +42,12 @@ export default function App() {
   );
 
   return (
-    <div className="flex min-h-screen flex-col bg-gradient-to-b from-slate-950 to-slate-900 text-slate-100">
-      <Navbar cartCount={cartCount} />
+    <div
+      className={`flex min-h-screen flex-col ${
+        isBusinessCardRoute ? 'bg-slate-900 text-slate-100' : 'bg-gradient-to-b from-slate-950 to-slate-900 text-slate-100'
+      }`}
+    >
+      {!isBusinessCardRoute && <Navbar cartCount={cartCount} />}
       <main className="flex-1">
         <Routes>
           <Route path="/" element={<HomePage onAddToCart={addToCart} />} />
@@ -51,9 +58,10 @@ export default function App() {
           />
           <Route path="/about" element={<AboutPage />} />
           <Route path="/contact" element={<ContactPage />} />
+          <Route path="/business-card" element={<BusinessCardPage />} />
         </Routes>
       </main>
-      <Footer />
+      {!isBusinessCardRoute && <Footer />}
     </div>
   );
 }
